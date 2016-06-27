@@ -2,8 +2,8 @@ var shopSchema = require('../ModelSchema/ShopSchema');
 var mongoose = require('mongoose');
 var Shop = mongoose.model('Shop',shopSchema,'Shop');
 //Lấy 1 đối tượng cửa hàng
-function GetShop(shopName,res) {
-    Shop.findOne({ shopName: shopName}).exec(function (err, data) {
+function GetShop(_id,res) {
+    Shop.findOne({ _id: _id}).exec(function (err, data) {
         if(err) throw err;
         res.json(data);
     });

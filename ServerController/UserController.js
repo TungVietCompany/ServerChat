@@ -33,9 +33,9 @@ function AddUser(user,res) {
 
 //Chỉnh sửa 1 đối tượng người dùng
 
-function UpdateUser(user,res) {
-    var user = new User(user);
-    User.update({userName : user.userName},{email : user.email,phoneNumber: user.phoneNumber,
+function UpdateUser(user1,res) {
+    var user = new User(user1);
+    User.update({_id : user1._id},{email : user.email,phoneNumber: user.phoneNumber,
         fullName: user.fullName,note: user.note,parent:user.parent,image:user.image},function (err,data) {
         if(err) res.json({status:"Failed"});
         res.json({status:"Success"});
@@ -44,9 +44,8 @@ function UpdateUser(user,res) {
 
 //Xóa 1 đối tượng
 
-function DeleteUser(user,res) {
-    var user = user;
-    User.update({userName : user},{valid:false},function (err,data) {
+function DeleteUser(_id,res) {
+    User.update({_id : _id},{valid:false},function (err,data) {
         if(err) res.json({status:"Failed"});
         res.json({status:"Success"});
     });
@@ -67,6 +66,25 @@ function CheckLogin(username,password,res) {
         else
         {
             res.json({status:"Failed"});
+        }
+    });
+}
+
+//Kiểm tra tài khoản đã tồn tại
+
+function CheckUserExits(username,res) {
+    User.findOne({userName : username},function (err,data) {
+        if(err) {
+            console.log(err);
+            res.json({status:"Failed"});
+        }
+        if(data.length > 0)
+        {
+            res.json({status:"Failed"});
+        }
+        else
+        {
+            res.json({status:"Success"});
         }
     });
 }

@@ -1,7 +1,8 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var userController = require('./ServerController/UserController');
-var shopContrller = require('./ServerController/ShopController');
+var shopController = require('./ServerController/ShopController');
+var productController = require('./ServerController/ProductController');
 var URL_MONGO = 'mongodb://192.168.0.10:27017/ChatApp';
 var app = express();
 var server = require("http").createServer(app);
@@ -34,25 +35,41 @@ app.put('/UpdateUser',function (req,res) {
     userController.UpdateUser(req.body,res);
 });
 app.put('/DeleteUser',function (req,res) {
-    userController.DeleteUser(req.query.account,res);
+    userController.DeleteUser(req.query._id,res);
 });
 //End Service người dùng
 
 //Service cửa hàng
-app.get('/GetAccount',function (req,res) {
-    userController.GetUser(req.query.account,res);
+app.get('/GetShop',function (req,res) {
+    shopController.GetShop(req.query._id,res);
 });
-app.post('/AddUser',function (req,res) {
+app.post('/AddShop',function (req,res) {
     console.log(req.body);
-    userController.AddUser(req.body,res);
+    shopController.AddShop(req.body,res);
 });
-app.put('/UpdateUser',function (req,res) {
-    userController.UpdateUser(req.body,res);
+app.put('/UpdateShop',function (req,res) {
+    shopController.UpdateShop(req.body,res);
 });
-app.put('/DeleteUser',function (req,res) {
-    userController.DeleteUser(req.query.account,res);
+app.put('/DeleteShop',function (req,res) {
+    shopController.DeleteShop(req.query._id,res);
 });
 //End Service cửa hàng
+
+//Service hàng hóa
+app.get('/GetProduct',function (req,res) {
+    productController.GetProduct(req.query._id,res);
+});
+app.post('/AddProduct',function (req,res) {
+    console.log(req.body);
+    productController.AddProduct(req.body,res);
+});
+app.put('/UpdateProduct',function (req,res) {
+    productController.UpdateProduct(req.body,res);
+});
+app.delete('/DeleteProduct',function (req,res) {
+    productController.DeleteProduct(req.query._id,res);
+});
+//End service hàng hóa
 
 //Upload Image
 var storage = multer.diskStorage({
@@ -91,3 +108,4 @@ app.get('/uploads/:file', function (req, res){
     res.end(img, 'binary');
 
 });
+//End image
