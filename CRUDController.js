@@ -27,8 +27,13 @@ catch (err)
 app.get('/GetAccount',function (req,res) {
     userController.GetUser(req.query.account,res);
 });
+app.get('/GetUserId',function (req,res) {
+    userController.GetUserID(req.query.account,res);
+});
+app.get('/CheckLogin',function (req,res) {
+    userController.CheckLogin(req.query.userName,req.query.password,res);
+});
 app.post('/AddUser',function (req,res) {
-    console.log(req.body);
     userController.AddUser(req.body,res);
 });
 app.put('/UpdateUser',function (req,res) {
@@ -60,7 +65,6 @@ app.get('/GetProduct',function (req,res) {
     productController.GetProduct(req.query._id,res);
 });
 app.post('/AddProduct',function (req,res) {
-    console.log(req.body);
     productController.AddProduct(req.body,res);
 });
 app.put('/UpdateProduct',function (req,res) {
@@ -74,9 +78,9 @@ app.delete('/DeleteProduct',function (req,res) {
 //Upload Image
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        var link = './Images/Mtviet1';
-        var x = link.split('/');
-        console.log(x[1]);
+        console.log(file);
+        var forderName = file.originalname.split("::");
+        var link = './Images/'+forderName[0];
         try {
             var stats = fs.lstatSync(link);
         }
@@ -84,12 +88,10 @@ var storage = multer.diskStorage({
         {
             mkdirp(link);
         }
-
-
         callback(null, link);
     },
     filename: function(req, file, cb ) {
-        return cb(null, file.originalname);
+        return cb(null, file.originalname.split("::")[1]);
 
     }
 });
@@ -100,12 +102,18 @@ app.post('/', multer({
     //console.log(req.body.name);
     return res.status(204).end();
 });
+
 app.get('/uploads/:file', function (req, res){
     file = req.params.file;
-    var dirname = "./Images/Mtviet1/";
+    var dirname = "./Images/";
     var img = fs.readFileSync(dirname + file );
     res.writeHead(200, {'Content-Type': 'image/jpg' });
     res.end(img, 'binary');
 
 });
+
+process.on('uncaughtException', function(err)  {
+    console.log(err);
+});
+
 //End image

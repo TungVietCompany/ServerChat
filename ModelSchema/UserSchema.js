@@ -9,7 +9,8 @@ var userSchema = new mongoose.Schema({
     note: { type: String, required: false },
     parent: { type: String, required: false },
     image: { type: String, required: false },
-    valid: { type: Boolean, required: true }
+    valid: { type: Boolean, required: true },
+    active: { type: Boolean, required: true }
 });
 
 module.exports = userSchema;

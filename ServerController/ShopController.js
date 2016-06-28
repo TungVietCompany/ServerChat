@@ -9,9 +9,9 @@ function GetShop(_id,res) {
     });
 }
 //Thêm 1 đối tượng cửa hàng
-function AddShop(shop,res) {
-    var shop = new Shop(shop);
-    Shop.find({ shopName:  shop.shopName}).exec(function (err, data) {
+function AddShop(shop1,res) {
+    var shop = new Shop(shop1);
+    Shop.find({ shopName:  shop.shopName , manager: shop1.manager}).exec(function (err, data) {
         if(err) throw err;
         if(data.length > 0)
         {

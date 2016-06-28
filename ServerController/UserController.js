@@ -10,25 +10,40 @@ function GetUser(account,res)
     });
 }
 
+//Lấy _id của người dùng
+function GetUserID(userName,res) {
+    User.findOne({ userName: userName}).exec(function (err, data) {
+        if(err) throw err;
+        res.json({status:data._id});
+    });
+}
+
 //Thêm 1 đối tượng người dùng
 
 function AddUser(user,res) {
     var user = new User(user);
-    User.find({ userName:  user.userName}).exec(function (err, data) {
-        if(err) throw err;
-        if(data.length > 0)
-        {
-            res.json({status:"Failed"});
-        }
-        else
-        {
-            //save data
-            User.create(user,function (err,data) {
-                if(err) res.json({status:"Failed"});
-                res.json({status:"Success"});
-            });
-        }
-    });
+    try
+    {
+        User.find({ userName:  user.userName}).exec(function (err, data) {
+            if(err) throw err;
+            if(data.length > 0)
+            {
+                res.json({status:"Failed"});
+            }
+            else
+            {
+                //save data
+                User.create(user,function (err,data) {
+                    if(err) res.json({status:"Failed"});
+                    res.json({status:"Success"});
+                });
+            }
+        });
+    }
+    catch (err)
+    {
+        res.json({status:"Failed"});
+    }
 }
 
 //Chỉnh sửa 1 đối tượng người dùng
@@ -54,11 +69,8 @@ function DeleteUser(_id,res) {
 //Kiểm tra thông tin đăng nhập
 
 function CheckLogin(username,password,res) {
-    User.findOne({userName : username, password : password},function (err,data) {
-        if(err) {
-            console.log(err);
-            res.json({status:"Failed"});
-        }
+    User.find({ userName: username,password:password}).exec(function (err, data) {
+        if(err) throw err;
         if(data.length > 0)
         {
             res.json({status:"Success"});
@@ -68,6 +80,18 @@ function CheckLogin(username,password,res) {
             res.json({status:"Failed"});
         }
     });
+
+    User.findOne({userName:username,password:password}),function (err,data) {
+        if(err) throw err;
+        if(data.length > 0)
+        {
+            res.json({status:"Success"});
+        }
+        else
+        {
+            res.json({status:"Failed"});
+        }
+    };
 }
 
 //Kiểm tra tài khoản đã tồn tại
@@ -87,6 +111,9 @@ function CheckUserExits(username,res) {
             res.json({status:"Success"});
         }
     });
+
+
+
 }
 
 /*
@@ -103,3 +130,4 @@ module.exports.AddUser = AddUser;
 module.exports.UpdateUser = UpdateUser;
 module.exports.DeleteUser = DeleteUser;
 module.exports.CheckLogin = CheckLogin;
+module.exports.GetUserID = GetUserID;
