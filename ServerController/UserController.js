@@ -73,25 +73,13 @@ function CheckLogin(username,password,res) {
         if(err) throw err;
         if(data.length > 0)
         {
-            res.json({status:"Success"});
+            res.json({status:data[0]._id});
         }
         else
         {
-            res.json({status:"Failed"});
+            res.json({status:""});
         }
     });
-
-    User.findOne({userName:username,password:password}),function (err,data) {
-        if(err) throw err;
-        if(data.length > 0)
-        {
-            res.json({status:"Success"});
-        }
-        else
-        {
-            res.json({status:"Failed"});
-        }
-    };
 }
 
 //Kiểm tra tài khoản đã tồn tại

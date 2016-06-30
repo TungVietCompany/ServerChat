@@ -11,7 +11,7 @@ function GetProduct(_id,res) {
 //Thêm 1 đối tượng hàng hóa
 function AddProduct(product,res) {
     var product = new Product(product);
-    Product.find({ productName:  product.productName}).exec(function (err, data) {
+    Product.find({ ID:  product.ID,shopId:product.shopId}).exec(function (err, data) {
         if(err) throw err;
         if(data.length > 0)
         {

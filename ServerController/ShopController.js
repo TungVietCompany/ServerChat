@@ -1,6 +1,7 @@
 var shopSchema = require('../ModelSchema/ShopSchema');
 var mongoose = require('mongoose');
 var Shop = mongoose.model('Shop',shopSchema,'Shop');
+var ObjectId = require('mongoose').Types.ObjectId;
 //Lấy 1 đối tượng cửa hàng
 function GetShop(_id,res) {
     Shop.findOne({ _id: _id}).exec(function (err, data) {
@@ -8,6 +9,21 @@ function GetShop(_id,res) {
         res.json(data);
     });
 }
+
+function GetListShop(manager,res) {
+    Shop.find({ manager: manager}).exec(function (err, data) {
+        if(err) throw err;
+        if(data.length > 0)
+        {
+            res.json(data);
+        }
+        else
+        {
+            res.json(null);
+        }
+    });
+}
+
 //Thêm 1 đối tượng cửa hàng
 function AddShop(shop1,res) {
     var shop = new Shop(shop1);
@@ -52,3 +68,4 @@ module.exports.GetShop = GetShop;
 module.exports.AddShop = AddShop;
 module.exports.UpdateShop = UpdateShop;
 module.exports.DeleteShop = DeleteShop;
+module.exports.GetListShop = GetListShop;

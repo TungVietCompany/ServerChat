@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var userController = require('./ServerController/UserController');
 var shopController = require('./ServerController/ShopController');
 var productController = require('./ServerController/ProductController');
+var groupProductController = require('./ServerController/GroupProductController');
 var URL_MONGO = 'mongodb://192.168.0.10:27017/ChatApp';
 var app = express();
 var server = require("http").createServer(app);
@@ -48,6 +49,9 @@ app.put('/DeleteUser',function (req,res) {
 app.get('/GetShop',function (req,res) {
     shopController.GetShop(req.query._id,res);
 });
+app.get('/GetListShop',function (req,res) {
+    shopController.GetListShop(req.query.manager,res);
+});
 app.post('/AddShop',function (req,res) {
     console.log(req.body);
     shopController.AddShop(req.body,res);
@@ -65,6 +69,7 @@ app.get('/GetProduct',function (req,res) {
     productController.GetProduct(req.query._id,res);
 });
 app.post('/AddProduct',function (req,res) {
+    console.log(req.body);
     productController.AddProduct(req.body,res);
 });
 app.put('/UpdateProduct',function (req,res) {
@@ -75,14 +80,20 @@ app.delete('/DeleteProduct',function (req,res) {
 });
 //End service hàng hóa
 
+//Service nhóm hàng
+app.get('/GetGroupProduct',function (req,res) {
+    groupProductController.GetProductGroup(res);
+});
+//End service nhóm hàng
+
 //Upload Image
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        console.log(file);
         var forderName = file.originalname.split("::");
         var link = './Images/'+forderName[0];
         try {
             var stats = fs.lstatSync(link);
+
         }
         catch (err)
         {
@@ -91,6 +102,7 @@ var storage = multer.diskStorage({
         callback(null, link);
     },
     filename: function(req, file, cb ) {
+        console.log(file.originalname.split("::")[1]);
         return cb(null, file.originalname.split("::")[1]);
 
     }
@@ -103,12 +115,19 @@ app.post('/', multer({
     return res.status(204).end();
 });
 
-app.get('/uploads/:file', function (req, res){
-    file = req.params.file;
-    var dirname = "./Images/";
-    var img = fs.readFileSync(dirname + file );
-    res.writeHead(200, {'Content-Type': 'image/jpg' });
-    res.end(img, 'binary');
+app.get('/uploads/:file1/:file2', function (req, res){
+    try {
+        file = req.params.file1;
+        file2 = req.params.file2;
+        var dirname = "./Images/";
+        var img = fs.readFileSync(dirname + file +'/'+ file2 );
+        res.writeHead(200, {'Content-Type': 'image/png' });
+        res.end(img, 'binary');
+    }
+    catch (err)
+    {
+        res.end(null, 'binary');
+    }
 
 });
 
