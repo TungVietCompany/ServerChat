@@ -8,6 +8,22 @@ function GetProduct(_id,res) {
         res.json(data);
     });
 }
+
+function GetListProduct(res) {
+    Product.find({}, function(err, data) {
+        if(err) throw err;
+        if(data.length > 0)
+        {
+            res.json(data);
+        }
+        else
+        {
+            res.json(null);
+        }
+    });
+}
+
+
 //Thêm 1 đối tượng hàng hóa
 function AddProduct(product,res) {
     var product = new Product(product);
@@ -53,3 +69,4 @@ module.exports.GetProduct = GetProduct;
 module.exports.AddProduct = AddProduct;
 module.exports.UpdateProduct = UpdateProduct;
 module.exports.DeleteProduct = DeleteProduct;
+module.exports.GetListProduct = GetListProduct;

@@ -68,6 +68,9 @@ app.put('/DeleteShop',function (req,res) {
 app.get('/GetProduct',function (req,res) {
     productController.GetProduct(req.query._id,res);
 });
+app.get('/GetListProduct',function (req,res) {
+    productController.GetListProduct(res);
+});
 app.post('/AddProduct',function (req,res) {
     console.log(req.body);
     productController.AddProduct(req.body,res);
