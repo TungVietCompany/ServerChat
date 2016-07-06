@@ -1,4 +1,103 @@
-var shopSchema = require('../ModelSchema/ShopSchema');
+var pg = require('pg');
+var connectionString = require('./PostgreConnectionController');
+
+function AddShop(shop,res) {
+    //console.log(shop);
+    pg.connect(connectionString, function(err, client, done) {
+        if(err) {
+            return console.error('could not connect to postgres', err);
+        }
+        var results = [];
+        var query = client.query("SELECT * FROM get_id_shop('"+shop.shop_id+"');");
+        query.on('row', function(row) {
+            results.push(row);
+        });
+        query.on('end', function() {
+            if(results.length > 0)
+            {
+                done();
+                res.json({status:"Failed"});
+            }
+            else
+            {
+
+                query = client.query("SELECT * FROM insert_shop('"+shop._id+"','"+shop.shop_id+"','"+shop.shop_name+"'," +
+                    "'"+shop.address+"','"+shop.note+"','"+shop.image+"',"+shop.longitude+","+shop.latitude+",now(),'"+shop.manager+"');");
+                query.on('end', function() {
+                    done();
+                    res.json({status:"Success"});
+                });
+            }
+
+        });
+    });
+}
+
+function GetListShop(manager,res) {
+    pg.connect(connectionString, function(err, client, done) {
+        if(err) {
+            return console.error('could not connect to postgres', err);
+        }
+        var results = [];
+        var query = client.query("SELECT * FROM get_all_shop('"+manager+"');");
+        query.on('row', function(row) {
+            results.push(row);
+        });
+        query.on('end', function() {
+            done();
+            res.json(results);
+        });
+    });
+
+}
+
+function UpdateShop(shop,res) {
+    pg.connect(connectionString, function(err, client, done) {
+        if(err) {
+            return console.error('could not connect to postgres', err);
+        }
+        var results = [];
+        var query = client.query("SELECT * FROM get_id_shop('"+shop.shop_id+"');");
+        query.on('row', function(row) {
+            results.push(row);
+        });
+        query.on('end', function() {
+            query = client.query("SELECT * FROM update_product('"+shop._id+"','"+shop.shop_id+"','"+shop.shop_name+"'," +
+                "'"+shop.address+"','"+shop.note+"','"+shop.image+"',"+shop.longitude+","+shop.latitude+");");
+            query.on('end', function() {
+                done();
+                res.json({status:"Success"});
+            });
+        });
+    });
+}
+
+module.exports.AddShop = AddShop;
+module.exports.GetListShop = GetListShop;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*var shopSchema = require('../ModelSchema/ShopSchema');
 var mongoose = require('mongoose');
 var Shop = mongoose.model('Shop',shopSchema,'Shop');
 var ObjectId = require('mongoose').Types.ObjectId;
@@ -68,4 +167,4 @@ module.exports.GetShop = GetShop;
 module.exports.AddShop = AddShop;
 module.exports.UpdateShop = UpdateShop;
 module.exports.DeleteShop = DeleteShop;
-module.exports.GetListShop = GetListShop;
+module.exports.GetListShop = GetListShop;*/

@@ -7,6 +7,43 @@ var fs = require("fs");
 var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
 var url = 'mongodb://localhost:27017/ChatApp';
+
+
+
+
+MongoClient.connect(url, function (err, db) {
+    if (err) {
+        console.log('Unable to connect to the mongoDB server');
+    } else {
+        //HURRAY!! We are connected. :)
+        console.log('Connection established to', url);
+
+        // Get the documents collection
+        var collection = db.collection('Product');
+
+        collection.find({productName: 'mtviet12345'}).toArray(function (err, result) {
+            if (err) {
+                console.log(err);
+            } else if (result.length) {
+                //res.json(result);
+                console.log(result);
+            } else {
+                console.log('No record!');
+            }
+            //Close connection
+            db.close();
+        });
+    }
+
+});
+
+
+
+
+
+
+
+
 app.get('/listUsers', function (req, res) {
         MongoClient.connect(url, function (err, db) {
             if (err) {

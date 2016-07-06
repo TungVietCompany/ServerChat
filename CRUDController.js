@@ -4,7 +4,8 @@ var userController = require('./ServerController/UserController');
 var shopController = require('./ServerController/ShopController');
 var productController = require('./ServerController/ProductController');
 var groupProductController = require('./ServerController/GroupProductController');
-var URL_MONGO = 'mongodb://192.168.0.10:27017/ChatApp';
+var cartController = require('./ServerController/CartController');
+var URL_MONGO = 'mongodb://192.168.0.56:27017/ChatApp';
 var app = express();
 var server = require("http").createServer(app);
 server.listen(process.env.PORT || 3000);
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var multer = require('multer');
+
 ///////////////////////////////////////////////////////////////////
 try {
     mongoose.connect(URL_MONGO);
@@ -72,7 +74,6 @@ app.get('/GetListProduct',function (req,res) {
     productController.GetListProduct(res);
 });
 app.post('/AddProduct',function (req,res) {
-    console.log(req.body);
     productController.AddProduct(req.body,res);
 });
 app.put('/UpdateProduct',function (req,res) {
@@ -88,6 +89,18 @@ app.get('/GetGroupProduct',function (req,res) {
     groupProductController.GetProductGroup(res);
 });
 //End service nhóm hàng
+
+//Service giỏ hàng
+
+app.get('/GetCart',function (req,res) {
+    cartController.GetCart(res);
+});
+
+app.post('/AddCart',function (req,res) {
+    cartController.AddCart(req.body,res);
+});
+
+//End service giỏ hàng
 
 //Upload Image
 var storage = multer.diskStorage({

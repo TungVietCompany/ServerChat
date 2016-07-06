@@ -1,4 +1,60 @@
-var userSchema = require('../ModelSchema/UserSchema');
+var pg = require('pg');
+var connectionString = require('./PostgreConnectionController');
+
+function AddUser(user,res) {
+    pg.connect(connectionString, function(err, client, done) {
+        if(err) {
+            return console.error('could not connect to postgres', err);
+        }
+        var results = [];
+        var query = client.query("SELECT * FROM getiduser('"+user.username+"');");
+        query.on('row', function(row) {
+            results.push(row);
+        });
+        query.on('end', function() {
+            if(results.length > 0)
+            {
+                done();
+                res.json({status:"Failed"});
+            }
+            else
+            {
+                query = client.query("SELECT * FROM insertusersystem('"+user.username+"','"+user.password+"','"+user.email+"'," +
+                    "'"+user.phone_number+"','"+user.fullname+"','"+user.note+"','"+user.parent+"','"+user.image+"',true,false,now());");
+                query.on('end', function() {
+                    done();
+                    res.json({status:"Success"});
+                });
+            }
+
+        });
+    });
+
+}
+
+module.exports.AddUser = AddUser;
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+module.exports.GetUser = GetUser;
+
+module.exports.UpdateUser = UpdateUser;
+module.exports.DeleteUser = DeleteUser;
+module.exports.CheckLogin = CheckLogin;
+module.exports.GetUserID = GetUserID;
+/*var userSchema = require('../ModelSchema/UserSchema');
 var mongoose = require('mongoose');
 var User = mongoose.model('User',userSchema,'User');
 //Lấy 1 đối tượng người dùng
@@ -104,7 +160,7 @@ function CheckUserExits(username,res) {
 
 }
 
-/*
+
 function DeleteUser(user,res) {
     var user = user;
     User.remove({userName : user},function (err,data) {
@@ -113,9 +169,3 @@ function DeleteUser(user,res) {
     });
 }
 */
-module.exports.GetUser = GetUser;
-module.exports.AddUser = AddUser;
-module.exports.UpdateUser = UpdateUser;
-module.exports.DeleteUser = DeleteUser;
-module.exports.CheckLogin = CheckLogin;
-module.exports.GetUserID = GetUserID;
